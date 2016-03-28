@@ -3,366 +3,7 @@
 <head>
 <title>JS-EnvModel&Closure</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<style type="text/css">
-/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
-/* Author: Nicolas Hery - http://nicolashery.com */
-/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
-/* Source: https://github.com/nicolahery/markdownpad-github */
-
-/* RESET
-=============================================================================*/
-
-html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
-
-/* BODY
-=============================================================================*/
-
-body {
-  font-family: Helvetica, arial, freesans, clean, sans-serif;
-  font-size: 14px;
-  line-height: 1.6;
-  color: #333;
-  background-color: #fff;
-  padding: 20px;
-  max-width: 960px;
-  margin: 0 auto;
-}
-
-body>*:first-child {
-  margin-top: 0 !important;
-}
-
-body>*:last-child {
-  margin-bottom: 0 !important;
-}
-
-/* BLOCKS
-=============================================================================*/
-
-p, blockquote, ul, ol, dl, table, pre {
-  margin: 15px 0;
-}
-
-/* HEADERS
-=============================================================================*/
-
-h1, h2, h3, h4, h5, h6 {
-  margin: 20px 0 10px;
-  padding: 0;
-  font-weight: bold;
-  -webkit-font-smoothing: antialiased;
-}
-
-h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
-  font-size: inherit;
-}
-
-h1 {
-  font-size: 28px;
-  color: #000;
-}
-
-h2 {
-  font-size: 24px;
-  border-bottom: 1px solid #ccc;
-  color: #000;
-}
-
-h3 {
-  font-size: 18px;
-}
-
-h4 {
-  font-size: 16px;
-}
-
-h5 {
-  font-size: 14px;
-}
-
-h6 {
-  color: #777;
-  font-size: 14px;
-}
-
-body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
-  margin-top: 0;
-  padding-top: 0;
-}
-
-a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
-  margin-top: 0;
-  padding-top: 0;
-}
-
-h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
-  margin-top: 10px;
-}
-
-/* LINKS
-=============================================================================*/
-
-a {
-  color: #4183C4;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-/* LISTS
-=============================================================================*/
-
-ul, ol {
-  padding-left: 30px;
-}
-
-ul li > :first-child, 
-ol li > :first-child, 
-ul li ul:first-of-type, 
-ol li ol:first-of-type, 
-ul li ol:first-of-type, 
-ol li ul:first-of-type {
-  margin-top: 0px;
-}
-
-ul ul, ul ol, ol ol, ol ul {
-  margin-bottom: 0;
-}
-
-dl {
-  padding: 0;
-}
-
-dl dt {
-  font-size: 14px;
-  font-weight: bold;
-  font-style: italic;
-  padding: 0;
-  margin: 15px 0 5px;
-}
-
-dl dt:first-child {
-  padding: 0;
-}
-
-dl dt>:first-child {
-  margin-top: 0px;
-}
-
-dl dt>:last-child {
-  margin-bottom: 0px;
-}
-
-dl dd {
-  margin: 0 0 15px;
-  padding: 0 15px;
-}
-
-dl dd>:first-child {
-  margin-top: 0px;
-}
-
-dl dd>:last-child {
-  margin-bottom: 0px;
-}
-
-/* CODE
-=============================================================================*/
-
-pre, code, tt {
-  font-size: 12px;
-  font-family: Consolas, "Liberation Mono", Courier, monospace;
-}
-
-code, tt {
-  margin: 0 0px;
-  padding: 0px 0px;
-  white-space: nowrap;
-  border: 1px solid #eaeaea;
-  background-color: #f8f8f8;
-  border-radius: 3px;
-}
-
-pre>code {
-  margin: 0;
-  padding: 0;
-  white-space: pre;
-  border: none;
-  background: transparent;
-}
-
-pre {
-  background-color: #f8f8f8;
-  border: 1px solid #ccc;
-  font-size: 13px;
-  line-height: 19px;
-  overflow: auto;
-  padding: 6px 10px;
-  border-radius: 3px;
-}
-
-pre code, pre tt {
-  background-color: transparent;
-  border: none;
-}
-
-kbd {
-    -moz-border-bottom-colors: none;
-    -moz-border-left-colors: none;
-    -moz-border-right-colors: none;
-    -moz-border-top-colors: none;
-    background-color: #DDDDDD;
-    background-image: linear-gradient(#F1F1F1, #DDDDDD);
-    background-repeat: repeat-x;
-    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
-    border-image: none;
-    border-radius: 2px 2px 2px 2px;
-    border-style: solid;
-    border-width: 1px;
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-    line-height: 10px;
-    padding: 1px 4px;
-}
-
-/* QUOTES
-=============================================================================*/
-
-blockquote {
-  border-left: 4px solid #DDD;
-  padding: 0 15px;
-  color: #777;
-}
-
-blockquote>:first-child {
-  margin-top: 0px;
-}
-
-blockquote>:last-child {
-  margin-bottom: 0px;
-}
-
-/* HORIZONTAL RULES
-=============================================================================*/
-
-hr {
-  clear: both;
-  margin: 15px 0;
-  height: 0px;
-  overflow: hidden;
-  border: none;
-  background: transparent;
-  border-bottom: 4px solid #ddd;
-  padding: 0;
-}
-
-/* TABLES
-=============================================================================*/
-
-table th {
-  font-weight: bold;
-}
-
-table th, table td {
-  border: 1px solid #ccc;
-  padding: 6px 13px;
-}
-
-table tr {
-  border-top: 1px solid #ccc;
-  background-color: #fff;
-}
-
-table tr:nth-child(2n) {
-  background-color: #f8f8f8;
-}
-
-/* IMAGES
-=============================================================================*/
-
-img {
-  max-width: 100%
-}
-</style>
-<style type="text/css">
-.highlight  { background: #ffffff; }
-.highlight .c { color: #999988; font-style: italic } /* Comment */
-.highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
-.highlight .k { font-weight: bold } /* Keyword */
-.highlight .o { font-weight: bold } /* Operator */
-.highlight .cm { color: #999988; font-style: italic } /* Comment.Multiline */
-.highlight .cp { color: #999999; font-weight: bold } /* Comment.Preproc */
-.highlight .c1 { color: #999988; font-style: italic } /* Comment.Single */
-.highlight .cs { color: #999999; font-weight: bold; font-style: italic } /* Comment.Special */
-.highlight .gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
-.highlight .gd .x { color: #000000; background-color: #ffaaaa } /* Generic.Deleted.Specific */
-.highlight .ge { font-style: italic } /* Generic.Emph */
-.highlight .gr { color: #aa0000 } /* Generic.Error */
-.highlight .gh { color: #999999 } /* Generic.Heading */
-.highlight .gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
-.highlight .gi .x { color: #000000; background-color: #aaffaa } /* Generic.Inserted.Specific */
-.highlight .go { color: #888888 } /* Generic.Output */
-.highlight .gp { color: #555555 } /* Generic.Prompt */
-.highlight .gs { font-weight: bold } /* Generic.Strong */
-.highlight .gu { color: #aaaaaa } /* Generic.Subheading */
-.highlight .gt { color: #aa0000 } /* Generic.Traceback */
-.highlight .kc { font-weight: bold } /* Keyword.Constant */
-.highlight .kd { font-weight: bold } /* Keyword.Declaration */
-.highlight .kp { font-weight: bold } /* Keyword.Pseudo */
-.highlight .kr { font-weight: bold } /* Keyword.Reserved */
-.highlight .kt { color: #445588; font-weight: bold } /* Keyword.Type */
-.highlight .m { color: #009999 } /* Literal.Number */
-.highlight .s { color: #d14 } /* Literal.String */
-.highlight .na { color: #008080 } /* Name.Attribute */
-.highlight .nb { color: #0086B3 } /* Name.Builtin */
-.highlight .nc { color: #445588; font-weight: bold } /* Name.Class */
-.highlight .no { color: #008080 } /* Name.Constant */
-.highlight .ni { color: #800080 } /* Name.Entity */
-.highlight .ne { color: #990000; font-weight: bold } /* Name.Exception */
-.highlight .nf { color: #990000; font-weight: bold } /* Name.Function */
-.highlight .nn { color: #555555 } /* Name.Namespace */
-.highlight .nt { color: #000080 } /* Name.Tag */
-.highlight .nv { color: #008080 } /* Name.Variable */
-.highlight .ow { font-weight: bold } /* Operator.Word */
-.highlight .w { color: #bbbbbb } /* Text.Whitespace */
-.highlight .mf { color: #009999 } /* Literal.Number.Float */
-.highlight .mh { color: #009999 } /* Literal.Number.Hex */
-.highlight .mi { color: #009999 } /* Literal.Number.Integer */
-.highlight .mo { color: #009999 } /* Literal.Number.Oct */
-.highlight .sb { color: #d14 } /* Literal.String.Backtick */
-.highlight .sc { color: #d14 } /* Literal.String.Char */
-.highlight .sd { color: #d14 } /* Literal.String.Doc */
-.highlight .s2 { color: #d14 } /* Literal.String.Double */
-.highlight .se { color: #d14 } /* Literal.String.Escape */
-.highlight .sh { color: #d14 } /* Literal.String.Heredoc */
-.highlight .si { color: #d14 } /* Literal.String.Interpol */
-.highlight .sx { color: #d14 } /* Literal.String.Other */
-.highlight .sr { color: #009926 } /* Literal.String.Regex */
-.highlight .s1 { color: #d14 } /* Literal.String.Single */
-.highlight .ss { color: #990073 } /* Literal.String.Symbol */
-.highlight .bp { color: #999999 } /* Name.Builtin.Pseudo */
-.highlight .vc { color: #008080 } /* Name.Variable.Class */
-.highlight .vg { color: #008080 } /* Name.Variable.Global */
-.highlight .vi { color: #008080 } /* Name.Variable.Instance */
-.highlight .il { color: #009999 } /* Literal.Number.Integer.Long */
-.task-list {
-	list-style-type: none;
-	padding-left: 0px !important;
-}
-
-.task-list-item {
-	padding-left: 10px;
-}
-
-.task-list-item + .task-list-item {
-	margin-top: 3px;
-}
-</style>
+<link rel="stylesheet" type="text/css" href="../static/markdownpad.css">
 </head>
 <body>
 <h1>JS的执行环境模型与闭包</h1>
@@ -541,7 +182,7 @@ varibale object =&gt; 见下文EC,table可以理解为js函数scope chain内部�
 <p>extra 2. :<br>
 1. 假定js的全局框架(window),包含所有基本过程名意义的约束(这里将+=*\看成和内置过程alert同等地位的过程)<br>
 2. 没有执行代码前,系统的当前环境是全局环境<br>
-3. 随之程序进行,当前环境不断发生变化<br>
+3. 随之程序进行,当前环境不断发生变化 <br>
     1. 可能在已有框架(包括全局框架)添加新约束<br>
     2. 可能修改某个(某些)已有框架的约束<br>
     3. 可能增加新的框架作为当前框架,原来的当前框架可能变新框架的外围框架</p>
@@ -566,19 +207,19 @@ y <span class="pl-k">=</span> <span class="pl-c1">2</span>
 undef <span class="pl-k">=</span> <span class="pl-c1">1</span> <span class="pl-c">// window.undef = 1</span></pre></div>
 
 <ol>
-<li>变量声明: var  
+<li>变量声明: var
 
 <ul>
 <li>在当前框架 建立  与 undefined的约束</li>
 </ul>
 </li>
-<li>变量声明并赋值: var  =  
+<li>变量声明并赋值: var  =
 
 <ul>
 <li>在当前框架 建立  与 value的约束</li>
 </ul>
 </li>
-<li>变量值修改  = 
+<li>变量值修改  =
 
 <ol>
 <li>在当前环境里查找  的约束。如果当前框架里有,约束就确定了,否则到外围框架去找。查找可以沿外围环境指针前进多步。</li>
@@ -677,7 +318,7 @@ window +--&gt; |                               |
 
 <ul>
 <li>用函数对象的形参和实参建立一个新框架</li>
-<li>JS会让每个函数接受两个附加参数,额外在新框架建立两个约束: 
+<li>JS会让每个函数接受两个附加参数,额外在新框架建立两个约束:
 
 <ul>
 <li>this this指针,取决于调用模式(4中:方法|函数|构造器|apply/call[/bind])</li>
@@ -703,7 +344,7 @@ window +--&gt; |                               |
                          |       ^       ^
                          |       |       |     环境E1+----+
                          |       |       |                |
-                         ^       |       |                | E1当前框架
+                         v       |       |                | E1当前框架
                      +-------+   |  +----+----------------v-----+
                      | · | · +---+  | x = 5                     |
                      +-+-+---+      | this = window             |
@@ -847,12 +488,12 @@ window +--------&gt; |  sumOfSquare:+------------+                  |      |
 
 global    +----------------------+
 window    |                      |
-+         |makeWithdraw: +--+    |    
++         |makeWithdraw: +--+    |
 |         |                 |    |
 +-------&gt; +-----------------+--+-+
-                            |  ^  
-                            |  |   
-                            v  |   
+                            |  ^
+                            |  |
+                            v  |
                        +----+--+-+
                   +----+ ·  |  · +
                   |    +----+----+
@@ -997,7 +638,7 @@ window   |  w2:+--------------------------+                  |
         <span class="pl-k">if</span>(<span class="pl-en">goodEnough</span>(guess)) {
             <span class="pl-k">return</span> guess
         } <span class="pl-k">else</span> {
-            <span class="pl-k">return</span> <span class="pl-en">sqrtIter</span>(<span class="pl-en">improveGuess</span>(guess))        
+            <span class="pl-k">return</span> <span class="pl-en">sqrtIter</span>(<span class="pl-en">improveGuess</span>(guess))
         }
     }
     <span class="pl-k">return</span> <span class="pl-en">sqrtIter</span>(<span class="pl-c1">1.0</span>)
@@ -1076,9 +717,90 @@ body: balance -= amount
 
 </pre>
 
+<p>上文用将函数抽象成pair,从技术上讲,js的函数内部大概可以简单表示成</p>
+
+<pre><code>var x = 1
+var func = function() {
+    var y = 2
+    return x + y
+}
+
+/*
+global = {
+    x: 1,
+    parent: null
+}
+
+// closure!!!
+// 因为scope属性
+func = {
+    code: ......,
+    scope: {
+        y: 2,
+        parent: global // ref
+    },
+    otherProp: ...,
+    otherMethod: ...
+    // 其实方法可以看成可以被调用的属性
+    // ()本身也是一种属性
+}
+*/
+
+// --------
+func() // 3
+x = 2
+func() // 4
+</code></pre>
+
+<p><strong>js的所有函数都是闭包</strong>,都在创建时保存了上下文信息(环境指针指向当前环境)</p>
+
+<p>// 3/3/2016 9:45:07 PM <br>
+附加: <br>
+<strong>关于动态静态作用域与闭包引入原因</strong>:</p>
+
+<pre><code>var x = 1
+var func = function() {
+    console.info(x)
+}
+
+func()
+// 静态: 1
+// 动态: 1
+
+(function(){
+    var x = 2
+    func()
+    return
+}());
+// 静态: 1
+// 动态: 2
+
+
+(function(func){
+    var x = 3
+    func()
+}(func))
+// 静态: 1
+// 动态: 3
+</code></pre>
+
+<pre>// 3/3/2016 9:44:48 PM
+// 此处无图,实在懒得画了~
+</pre>
+
+<p>个人理解,动态作用域(Dynamic scope)中,函数仅仅只是可执行代码,无环境指针指向创建时环境,函数调用时创建的框架指向函数被创建时的框架;或者说变量通过stack管理,自由变量按stack向上查找;<br>
+闭包是为解决动态作用域问题产生的;<br>
+静态作用域又可以成为词法作用域(Lexical scope),代指作用域在词法解析阶段已经确定,这里也解释为什么闭包又被成为词法闭包.<br><br>
+静态作用域下的变量的作用域确定(js里头一些取巧的情况除外,比如eval),但是生命周期一般不确定,<br>
+靠引用计数与分代(e.g. v8)等GC技术来管理;或者说闭包的存在使得GC成为必须,查到GC在1960就已经被实现.<br>
+闭包的形成可以看做自由变量的refCount+1,于是变量不被释放,这也引出闭包使用不当可能导致性能问题.</p>
+
 <h3>3. 闭包的例子与应用</h3>
 
 <h4>1. 闭包中的自由变量是ref不是copy,另一个例子见备注"一个陷阱"</h4>
+
+<p><em>js中的自由变量指的是在函数中使用,但既不是函数参数也不是局部变量的变量</em><br>
+<em>再次申明,this与arguments看做函数的附加参数</em></p>
 
 <pre><code>var printX = (function() {
     var x = 1
@@ -1184,7 +906,7 @@ counter.reset()
 
 <h4>6. 事件句柄,回调函数</h4>
 
-<pre><code>// 3/2/2016 12:54:32 AM 
+<pre><code>// 3/2/2016 12:54:32 AM
 // 一个有意思的演示代码
 // http://image.baidu.com/
 
@@ -1203,7 +925,7 @@ $("body").on("click", "img", (function() {
         var name = e.target.src.split("/").pop() || "unknown"
         analyze[name] = (analyze[name] || 0) + 1
         console.info("clicked analyze:", analyze)
-        return false    
+        return false
     }
 }()))
 </code></pre>
@@ -1251,7 +973,7 @@ console.info(result)
         var addB = function(c) {
             return a + b + c
         }
-        return addB 
+        return addB
     }
     return addA
 }
@@ -1266,7 +988,7 @@ add(1)(2)(3)
         var addB = function(c) {
             return a_1 + b + c
         }
-        return addB 
+        return addB
     }
     return addA
 }
@@ -1280,7 +1002,7 @@ var addA_1 = function(b, a_1) {
     var addB = function(c) {
         return a_1 + b + c
     }
-    return addB 
+    return addB
 }
 
 var add = function() {
@@ -1295,7 +1017,7 @@ var addA_1 = function(b, a_1) {
     var addB = function(c, b_1, a_2) {
         return a_2 + b_1 + c
     }
-    return addB 
+    return addB
 }
 
 var add = function() {
@@ -1329,9 +1051,35 @@ add(3, 2, 1)
 
 <p>lambda lifting远比以上复杂</p>
 
-<ol>
-<li>见附录 tms-basic项目代码实例</li>
-</ol>
+<h4>9. 闭包与throw的</h4>
+
+<pre><code>// 3/3/2016 10:45:35 PM
+var find = function(arr, el) {
+    var $break = {}
+    try {
+        arr.forEach(function(v, i){
+            if(v === el) {
+                // break
+                $break.return = i
+                throw $break
+            }
+        })
+    } catch(e) {
+        if(e === $break) {
+            return $break.return
+        }
+    }
+}
+
+find([2,3,4,1,5], 1) // 3
+</code></pre>
+
+<p>// 3/3/2016 08:55:21 AM <br>
+最近发现java的Exception与Error都继承自Throwable,个人认为不但异常与错误可以被抛出,有时候数据也可以被抛出;<br>
+类比java,$break可以作为一个继承自Throwable的类型的对象,来抛出并捕获(instanceof);<br>
+throw有时候可以作为"跨栈帧的return"</p>
+
+<h4>10. 见附录 tms-basic项目代码实例</h4>
 
 <h3>4. 程序执行环境</h3>
 
@@ -1345,7 +1093,7 @@ All the ECMAScript program runtime is presented as the execution context (EC) st
 <li>栈顶 -&gt; active context</li>
 </ol>
 
-<pre> 
+<pre>
     EC STACK
 +--------------+
 |--Active  EC--| &lt;----- TOP
@@ -1403,7 +1151,7 @@ All the ECMAScript program runtime is presented as the execution context (EC) st
     }
 }</pre></div>
 
-<pre> 
+<pre>
     EC STACK
 +--------------+
 |   forth      | &lt;----- TOP
@@ -1422,16 +1170,16 @@ window       |                                                         |
 +            | first:+                                                 |
 +----------&gt; |  +----+                                                 |
              +--|-----+--------+---------------------------------------+
-                |     ^        ^  
-                |     |        |  
+                |     ^        ^
+                |     |        |
                 v     |  +-------+
              +--+--+  |+-+:second| &lt;- first invoke env
              | ·|· +--+| |       |
              +--+--+   | +--+--+-+
               First    |    ^  ^     +-------+
-                       v    |  |     |:third | &lt;- second invoke env 
+                       v    |  |     |:third | &lt;- second invoke env
                     +--+--+ |  +-----+       |
-                    |· |· |-+        +-----+-+             
+                    |· |· |-+        +-----+-+
                     +--+--+                ^      +-------+
                     Second                 |      |:forth | &lt;- third invoke env
                                            +------+       |
@@ -1533,7 +1281,8 @@ $$.magic(function() {
 <h4>1. C(无block扩展)、Java(8以前)没有传统意义的闭包</h4>
 
 <ul>
-<li>从函数调用堆栈角度讲,闭包就是就是函数的“堆栈”在函数返回后并不释放,所以也可以理解为这些函数堆栈并不在栈上分配而是在堆上分配</li>
+<li>基于堆栈的语言,C、Java等,参数与局部变量保存在stack,函数调用,变量参数压栈,函数返回,从栈中移除</li>
+<li>从堆栈角度讲,闭包就是就是函数的“栈”在函数返回后并不释放,所以也可以理解为这些函数堆栈并不在栈上分配而是在堆上分配,或者自由变量被由栈复制到堆</li>
 <li>php函数调用也是基于stack实现,php中对闭包的支持是通过use关键词,显示引用内部函数作用域外变量与参数 </li>
 </ul>
 
