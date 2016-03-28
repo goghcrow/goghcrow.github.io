@@ -36,7 +36,7 @@ deerResume.controller('resumeCtrl', function ($scope,$http,storage) {
   //     $scope.resume = data;
   // });
 
-  $http.get("../resume.md").success(function( data ){
+  $http.get("/resume/resume.md").success(function( data ){
     $scope.result = {
       errno: 0,
       show: 1,
