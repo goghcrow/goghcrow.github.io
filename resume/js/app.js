@@ -37,7 +37,7 @@ deerResume.controller('resumeCtrl', function ($scope,$http,storage) {
   // });
 
   $http.get("http://goghcrow.github.io/resume/resume.md").success(function( data ){
-    $scope.result = {
+    $scope.resume = {
       errno: 0,
       show: 1,
       title: "我的简历",
