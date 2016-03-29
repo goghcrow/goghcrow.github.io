@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Http-Header-debug</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../static/css/markdownpad.css">
+</head>
+<body>
+<h1>Http Header debug</h1>
+
+<p>偶然读到infoQ的一篇文章，<a href="http://www.infoq.com/cn/news/2015/04/chrome-devtools-for-all">chrome调试一切</a>，颇有趣味，遂折腾一番。</p>
+
+<p>clone了<a href="https://github.com/ccampbell/chromelogger">Chrome Logger</a>的代码，小修改一番，挂到chrome上。</p>
+
+<p>手里恰好在做java项目，找到java的server端实现<a href="https://github.com/JamesPan/chromelogger4j/blob/master/src/name/yumaa/ChromeLogger4J.java">ChromeLogger4J</a>，替换了Base64实现为java8的新api，替换simpleJson为fastjson，翻了下源码，格式化部分读起来索然无味，于是略过，magic的部分其实只有一个方法，坑也在里头：</p>
+
+<div class="highlight highlight-source-java"><pre><span class="pl-c">// 原方法</span>
+<span class="pl-k">private</span> <span class="pl-k">void</span> writeHeader(<span class="pl-smi">JSONObject</span> data) {
+        <span class="pl-c">// String encodedData = Base64.encode(data.toJSONString(), "UTF-8").replaceAll("\\n", "");</span>
+
+        <span class="pl-c">// 作者其实把坑挖好了，丢了个fixme</span>
+        <span class="pl-c">//FIXME if there is long header it rises "header full: java.lang.ArrayIndexOutOfBoundsException: 16384" uncatchable exception</span>
+        <span class="pl-c">// response.setHeader(HEADER_NAME, encodedData);</span>
+}
+
+
+<span class="pl-c">// 不严谨的小改了下</span>
+<span class="pl-k">private</span> <span class="pl-k">void</span> writeHeader(<span class="pl-smi">JSONObject</span> data) {
+        <span class="pl-smi">String</span> encodedData <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>;
+        <span class="pl-k">try</span> {
+            encodedData <span class="pl-k">=</span> <span class="pl-smi">Base64</span><span class="pl-k">.</span>getEncoder()<span class="pl-k">.</span>encodeToString(data<span class="pl-k">.</span>toJSONString()<span class="pl-k">.</span>getBytes(<span class="pl-s"><span class="pl-pds">"</span>utf-8<span class="pl-pds">"</span></span>))<span class="pl-k">.</span>replaceAll(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\\</span>n<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>);
+        } <span class="pl-k">catch</span> (<span class="pl-smi">UnsupportedEncodingException</span> e) {
+            response<span class="pl-k">.</span>setHeader(<span class="pl-c1">HEADER_NAME</span>, e<span class="pl-k">.</span>getMessage());
+            e<span class="pl-k">.</span>printStackTrace();
+        }
+
+        <span class="pl-k">try</span> {
+            <span class="pl-k">int</span> len <span class="pl-k">=</span> encodedData<span class="pl-k">.</span>getBytes(<span class="pl-s"><span class="pl-pds">"</span>UTF-8<span class="pl-pds">"</span></span>)<span class="pl-k">.</span>length;
+            <span class="pl-k">if</span>(len <span class="pl-k">&lt;=</span> <span class="pl-c1">1024</span> <span class="pl-k">*</span> <span class="pl-c1">7</span>) {
+                response<span class="pl-k">.</span>setHeader(<span class="pl-c1">HEADER_NAME</span>, encodedData);
+            } <span class="pl-k">else</span> {
+                response<span class="pl-k">.</span>setHeader(<span class="pl-c1">HEADER_NAME</span>, <span class="pl-s"><span class="pl-pds">"</span>header is to max!!!<span class="pl-pds">"</span></span>);
+            }
+        } <span class="pl-k">catch</span> (<span class="pl-smi">UnsupportedEncodingException</span> e) {
+            response<span class="pl-k">.</span>setHeader(<span class="pl-c1">HEADER_NAME</span>, e<span class="pl-k">.</span>getMessage());
+            e<span class="pl-k">.</span>printStackTrace();
+        }
+    }</pre></div>
+
+<p>js扩展核心部分：</p>
+
+<div class="highlight highlight-source-js"><pre>    <span class="pl-c">// btoa base-64 encode</span>
+    <span class="pl-c">// atob base-64 decode</span>
+
+    <span class="pl-k">function</span> <span class="pl-en">_process</span>(<span class="pl-smi">details</span>) {
+        <span class="pl-k">var</span> headers <span class="pl-k">=</span> <span class="pl-smi">details</span>.<span class="pl-smi">responseHeaders</span>;
+
+        <span class="pl-k">for</span> (<span class="pl-k">var</span> i <span class="pl-k">=</span> <span class="pl-c1">0</span>; i <span class="pl-k">&lt;</span> <span class="pl-smi">headers</span>.<span class="pl-c1">length</span>; i<span class="pl-k">++</span>) {
+            <span class="pl-k">if</span> (<span class="pl-c1">HEADER_NAMES</span>.<span class="pl-c1">indexOf</span>(headers[i].<span class="pl-c1">name</span>.<span class="pl-c1">toLowerCase</span>()) <span class="pl-k">!==</span> <span class="pl-k">-</span><span class="pl-c1">1</span>) {
+                <span class="pl-en">_logData</span>(<span class="pl-en">_decode</span>(headers[i].<span class="pl-c1">value</span>));
+                <span class="pl-k">return</span>;
+            }
+        }
+    }
+
+    <span class="pl-k">function</span> <span class="pl-en">_decode</span>(<span class="pl-smi">header</span>) {
+        <span class="pl-k">return</span> <span class="pl-c1">JSON</span>.<span class="pl-c1">parse</span>(<span class="pl-en">atob</span>(header));
+    }
+
+    <span class="pl-c">// 总体逻辑：</span>
+    <span class="pl-c">// 后台脚本处理监听http请求，通过chrome消息发送给相应前台脚本，在控制台打印调试信息</span></pre></div>
+
+<p>一言蔽之：</p>
+
+<pre><code>// server side:
+header(DEBUG_HEADER_NAME_KEY, base64_encode(json_encode(DEBUG_INFO_STR)))
+
+// client side:
+Object = json_decode(base64_decode(DEBUG_HEADER_NAME_VALUE))
+</code></pre>
+
+<p>调试的精巧之处可看似薛定谔的猫，观察本身影响结果。c与c++有条件编译可用，debug代码尽可以丢进去。道理是一样的。<br>
+利用Chrome调试一切的问题在于，如何不影响被调试的http请求。放请求体么？不处理好，很容易干扰业务，不甚可行，于是只剩下header；<br>
+善用header，将调试信息格式化之后塞到header里头，豁然开朗。</p>
+
+<p>header一个很古老的业务应用是放授权信息，标准里头有authorize，非标准实现可以放token，或者说header的cookie段也是偏业务的属性。</p>
+
+<div class="highlight highlight-source-java"><pre>
+<span class="pl-c">// 原谅我还是喜欢c#的action与function的命名方式</span>
+@<span class="pl-smi">FunctionalInterface</span>
+<span class="pl-k">public</span> <span class="pl-k">interface</span> <span class="pl-en">Act1</span>&lt;T1&gt; {
+    <span class="pl-k">void</span> <span class="pl-en">call</span>(<span class="pl-smi">T1</span> <span class="pl-v">t1</span>);
+}
+
+<span class="pl-c">// typedef</span>
+<span class="pl-k">public</span> <span class="pl-k">interface</span> <span class="pl-en">Console</span> <span class="pl-k">extends</span> <span class="pl-e">Act1&lt;<span class="pl-k">Act1&lt;<span class="pl-smi">ChromeLogger4J</span>&gt;</span>&gt;</span> {}
+
+<span class="pl-k">public</span> class $ {
+
+    <span class="pl-c">// 封装了一个获取ChromeLog的静态方法</span>
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-smi">Console</span> getChromeConsole(
+        <span class="pl-k">final</span> <span class="pl-smi">HttpServletRequest</span> req,
+        <span class="pl-k">final</span> <span class="pl-smi">HttpServletResponse</span> res
+    ) {
+        <span class="pl-smi">Console</span> ignoreAct <span class="pl-k">=</span> (ignore) <span class="pl-k">-</span><span class="pl-k">&gt;</span> {};
+        <span class="pl-k">if</span>(res <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">||</span> req <span class="pl-k">==</span> <span class="pl-c1">null</span>) {
+            <span class="pl-k">return</span> ignoreAct;
+        }
+
+        <span class="pl-c">// 通过header来判断是否开启chromedebug调试</span>
+        <span class="pl-c">// chrome扩展开关控制</span>
+        <span class="pl-k">try</span> {
+            <span class="pl-k">if</span>(req<span class="pl-k">.</span>getIntHeader(<span class="pl-s"><span class="pl-pds">"</span>Debug<span class="pl-pds">"</span></span>) <span class="pl-k">!=</span> <span class="pl-c1">1</span>) {
+                <span class="pl-k">return</span> ignoreAct;
+            }
+        } <span class="pl-k">catch</span> (<span class="pl-c">/*NumberFormat*/</span><span class="pl-smi">Exception</span> e) {
+            <span class="pl-k">return</span> ignoreAct;
+        }
+
+        <span class="pl-smi">ChromeLogger4J</span> console <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">ChromeLogger4J</span>(res);
+        console<span class="pl-k">.</span>stack <span class="pl-k">=</span> <span class="pl-c1">true</span>;
+        console<span class="pl-k">.</span>addnull <span class="pl-k">=</span> <span class="pl-c1">true</span>;
+        console<span class="pl-k">.</span>reflect <span class="pl-k">=</span> <span class="pl-c1">true</span>;
+        console<span class="pl-k">.</span>reflectmethods <span class="pl-k">=</span> <span class="pl-c1">true</span>;
+
+        <span class="pl-k">return</span> (act) <span class="pl-k">-</span><span class="pl-k">&gt;</span> {
+            <span class="pl-k">try</span> {
+                act<span class="pl-k">.</span>call(console);
+            } <span class="pl-k">catch</span> (<span class="pl-smi">Exception</span> ignore) {}
+        };
+    }
+}
+
+<span class="pl-c">// 在不修改ChromeLogger4J基础上，屏蔽了debug的条件判断</span>
+<span class="pl-c">// example</span>
+<span class="pl-smi">Console</span> console <span class="pl-k">=</span> getChromeConsole(req, res);
+console<span class="pl-k">.</span>call(c <span class="pl-k">-</span><span class="pl-k">&gt;</span> c<span class="pl-k">.</span>log(<span class="pl-s"><span class="pl-pds">"</span>log<span class="pl-pds">"</span></span>));
+console<span class="pl-k">.</span>call(c <span class="pl-k">-</span><span class="pl-k">&gt;</span> c<span class="pl-k">.</span>info(<span class="pl-s"><span class="pl-pds">"</span>info<span class="pl-pds">"</span></span>));
+console<span class="pl-k">.</span>call(c <span class="pl-k">-</span><span class="pl-k">&gt;</span> c<span class="pl-k">.</span>error(<span class="pl-s"><span class="pl-pds">"</span>error<span class="pl-pds">"</span></span>));
+</pre></div>
+
+<p>在springMVC注册了简单的异常处理handler：</p>
+
+<div class="highlight highlight-source-java"><pre>@<span class="pl-smi">ControllerAdvice</span>
+<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">ExceptionController</span> {
+    <span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-k">final</span> <span class="pl-smi">Log</span> logger <span class="pl-k">=</span> <span class="pl-smi">LogFactory</span><span class="pl-k">.</span>getLog(<span class="pl-smi">ScheduleController</span><span class="pl-k">.</span>class);
+
+    <span class="pl-k">@ExceptionHandler</span>(<span class="pl-smi">Exception</span><span class="pl-k">.</span>class)
+    <span class="pl-k">@ResponseStatus</span>(<span class="pl-c1">value</span> <span class="pl-k">=</span> <span class="pl-smi">HttpStatus</span><span class="pl-c1"><span class="pl-k">.</span>OK</span>) <span class="pl-c">// 废弃http状态吗，错误已通过错误码封装（自行忽略）</span>
+    <span class="pl-k">@ResponseBody</span>
+    <span class="pl-k">public</span> <span class="pl-k">ServiceResult&lt;<span class="pl-smi">Object</span>&gt;</span> <span class="pl-en">exceptionHandler</span>(
+            <span class="pl-k">final</span> <span class="pl-smi">Exception</span> <span class="pl-v">ex</span>,
+            <span class="pl-k">final</span> <span class="pl-smi">HttpServletRequest</span> <span class="pl-v">req</span>,
+            <span class="pl-k">final</span> <span class="pl-smi">HttpServletResponse</span> <span class="pl-v">res</span>)
+    {
+        <span class="pl-smi">Console</span> console <span class="pl-k">=</span> $$<span class="pl-k">.</span>getChromeConsole(req, res);
+        <span class="pl-k">try</span> {
+            <span class="pl-smi">String</span> exMsg <span class="pl-k">=</span> $$<span class="pl-k">.</span>extostr(ex); <span class="pl-c">// 拿到美化的stacktrace 字符串</span>
+            <span class="pl-smi">String</span> errUrl <span class="pl-k">=</span> req<span class="pl-k">.</span>getPathInfo() <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>?<span class="pl-pds">"</span></span> <span class="pl-k">+</span> req<span class="pl-k">.</span>getQueryString();
+            logger<span class="pl-k">.</span>error(<span class="pl-s"><span class="pl-pds">"</span>exception in <span class="pl-pds">"</span></span> <span class="pl-k">+</span> errUrl <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>: <span class="pl-pds">"</span></span> <span class="pl-k">+</span> ex<span class="pl-k">.</span>getMessage(), ex);
+
+            <span class="pl-c">// chrome debug</span>
+            console<span class="pl-k">.</span>call(c <span class="pl-k">-</span><span class="pl-k">&gt;</span> c<span class="pl-k">.</span>error(<span class="pl-c">/*ex,*/</span> $$<span class="pl-k">.</span>extostr(ex)));
+
+            <span class="pl-k">boolean</span> isAjax <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>XMLHttpRequest<span class="pl-pds">"</span></span><span class="pl-k">.</span>equals(req<span class="pl-k">.</span>getHeader(<span class="pl-s"><span class="pl-pds">"</span>X-Requested-With<span class="pl-pds">"</span></span>));
+            <span class="pl-k">if</span>(isAjax) {
+                <span class="pl-k">return</span> $$<span class="pl-k">.</span>retFalse(<span class="pl-s"><span class="pl-pds">"</span>抱歉, %&gt;_&lt;% 有错误发生<span class="pl-pds">"</span></span>);
+            } <span class="pl-k">else</span> {
+                <span class="pl-c">// FIXME remove</span>
+                <span class="pl-c">// res.sendRedirect("/error");</span>
+                ex<span class="pl-k">.</span>printStackTrace();
+                res<span class="pl-k">.</span>getWriter()<span class="pl-k">.</span>write(<span class="pl-s"><span class="pl-pds">"</span>抱歉, %&gt;_&lt;% 有错误发生<span class="pl-pds">"</span></span>);
+            }
+        }<span class="pl-k">catch</span> (<span class="pl-smi">Throwable</span> t){
+            <span class="pl-c">// chrome debug</span>
+            console<span class="pl-k">.</span>call(c <span class="pl-k">-</span><span class="pl-k">&gt;</span> c<span class="pl-k">.</span>error(t));
+
+            t<span class="pl-k">.</span>printStackTrace();
+            logger<span class="pl-k">.</span>error(t<span class="pl-k">.</span>getMessage() , t);
+        }
+        <span class="pl-k">return</span> <span class="pl-c1">null</span>;
+    }
+}</pre></div>
+
+<p>看起来很美好的一个玩具，比如线上代码报错，不方便调试，临时开一下chrome扩展，看下异常；<br>
+但是，但现实总是骨感；项目的架构是流行的nginx反向代理，负载均衡，后面挂着tomcat。</p>
+
+<pre><code>explorer -&gt; nginx -&gt; tomcat -&gt; java
+java -&gt; tomcat -&gt; nginx -&gt; explorer
+</code></pre>
+
+<p>实际使用中发现，nginx不久就无情的报502错误，看日志显示，header太大了!!!</p>
+
+<p>协议里头木有规定header大小，问题是web服务器实现不得不考虑这个问题，查了下资料,<br>
+万能的<a href="http://stackoverflow.com/questions/686217/maximum-on-http-header-values">stackoverflow</a></p>
+
+<blockquote>
+<p>Apache 2.0, 2.2: 8K<br>
+nginx: 4K - 8K<br>
+IIS: varies by version, 8K - 16K<br>
+Tomcat: varies by version, 8K - 48K (?!)</p>
+</blockquote>
+
+<p>tomcat默认 maxHttpHeaderSize 8kb，nginx估计默认4k,改了下nginx的配置，</p>
+
+<pre><code>proxy_buffers 16 16k;
+proxy_buffer_size 32k;
+</code></pre>
+
+<p>瓶颈就不在nginx上了~</p>
+
+<p>不过chrome调试一切还是有点像噱头，特么的不适合输出复杂的java对象~</p>
+
+<p>想来如果php使用的话，要各种ob_*函数控制缓存了，set完header之后才能刷缓冲区~</p>
+
+<p><strong>end</strong></p>
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
