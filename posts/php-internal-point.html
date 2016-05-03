@@ -70,9 +70,9 @@ and the internal array pointer is advanced by one <br>
 (so on the next iteration, you'll be looking at the next element).</p>
 
 <p>The second form will additionally assign the current element's key to the $key variable on each iteration.</p>
+<strong>and the internal array pointer is advanced by one</strong>
 </blockquote>
 
-<p>** and the internal array pointer is advanced by one **</p>
 
 <p>看来我原来的知识是正确的；</p>
 
@@ -80,8 +80,8 @@ and the internal array pointer is advanced by one <br>
 
 <blockquote>
 <p>Note:<br>
-In PHP 5, when foreach first starts executing, the internal array pointer is automatically reset to the first &gt; &gt; &gt; element of the array. This means that you do not need to call reset() before a foreach loop.<br>
-As foreach relies on the internal array pointer in PHP 5, changing it within the loop may lead to unexpected &gt; &gt; &gt; behavior.<br>
+In PHP 5, when foreach first starts executing, the internal array pointer is automatically reset to the first element of the array. This means that you do not need to call reset() before a foreach loop.<br>
+As foreach relies on the internal array pointer in PHP 5, changing it within the loop may lead to unexpected behavior.<br>
 In PHP 7, foreach does not use the internal array pointer.</p>
 </blockquote>
 
